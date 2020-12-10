@@ -1,0 +1,144 @@
+<!--pages/order/order.wxml-->
+<view class="container bgF padd30"  style="z-index:0">
+ <view class='nav bg-white'>
+    <navBar background='#fff' title="{{navTitle}}"  back="{{true}}" home="{{false}}" bindback="handerback" bindhome="handerhome">    
+      </navBar>
+  </view>
+  <view class="box690 ">
+    <view class="secTitle">
+      {{secTitle}}
+    </view>
+    <view wx:for="{{orderData}}" data-item="item" wx:for-index='ind' class="itemBox">
+      <view data-id="{{item.minCateId}}" class="proT">
+        <!-- <text class="xxP"> {{item.problemTitle}} </text> -->
+      
+        <!-- <view class="showNotice" bindtap="showNotice" >       
+          <image class="stateIcon" src="../../img/icon_tips11.png"></image>
+          <!-- <view  class="noticeT"> {{item.prompt}}</view> 
+        </view> -->
+        <view class-="box690">
+          <van-collapse value="{{ activeNames }}" border="{{false}}" bind:change="onChange2" content-class="noticeT" >
+            <van-collapse-item title="{{item.problemTitle}}" custom-class="xxP" name="{{ind}}" right-icon="question-o">
+              {{item.detailTip}}
+            </van-collapse-item>
+          </van-collapse>
+        
+        </view>
+       
+        <view class="box690" wx:if="{{item.isPeopleNum == 1}}"> 
+        <view wx:if="{{patrolState != 1}}">
+          <van-cell-group>
+           <van-field
+             value="{{ peopleNum }}"   
+             title-width="120"        
+             clearable
+             input-align='right'
+             label="职业登记人数"
+             placeholder="请输登记等级人数"
+             bind:change="getPeopleNum"
+           />
+            </van-cell-group>
+        </view>
+         <view wx:if="{{patrolState == 1}}">
+          <van-cell title="职业登记人数" value="{{ peopleNum }}" size="large" />
+        </view>
+        </view>
+        <view class="box690 hasTop" wx:if="{{display == 1 &&  item.isPeopleNum !=1 || patrolState == 2 }}"> 
+          <view class="halfB {{item.selOption == 1 ? 'hasChoice' : '' }}" data-minCateId="{{item.minCateId}}" data-type="1" data-index="{{ind}}" bindtap="setChios"  >是</view>
+          <view class="halfB {{item.selOption == 0 ? 'hasChoice' : ''}} "  data-type="0" data-minCateId="{{item.minCateId}}" data-index="{{ind}}" bindtap="setChios" >否</view>
+           <view class="halfB {{item.selOption == 2 ? 'hasChoice' : '' }}" data-minCateId="{{item.minCateId}}" data-type="2" data-index="{{ind}}" bindtap="setChios" >跳过</view>
+          <view class="halfB {{item.selOption == 3 ? 'hasChoice' : ''}} "  data-type="3" data-minCateId="{{item.minCateId}}" data-index="{{ind}}" bindtap="setChios" >不涉及</view>
+        </view>
+      </view>
+      <!--添加备注的空间 wx:if="{{ item.selOption == 2 &&  item.isPeopleNum !=1 || item.selOption == 3  &&  item.isPeopleNum !=1}}"-->
+      <view class="box690 zind"  >
+        <van-cell title="添加备注（简短描述）" border="{{false}}"></van-cell>
+        <van-cell-group> <!-- wx:if="{{texShow == true}}"-->
+          <van-field
+            value="{{ item.remark }}"
+            placeholder="请简短描述"
+            type="textarea"
+            autosize	
+            bind:change="setRemark"         
+            input-class="textarea"
+            data-index="{{ind}}"
+            data-minCateId="{{item.minCateId}}"
+          />
+        </van-cell-group>     
+      </view>
+      <view class="box690"> 
+        <view class="titleLine ">照片 </view>
+        <view class="box690 hasTop imgBox" >
+          <view wx:for="{{item.imgList}}" wx:if="{{patrolState == 1}}" wx:for-item="j" wx:for-index="cell" class="imgList">
+           
+              <image src="{{j.url}}" class="listImg"></image> 
+              <!-- <view><image src="../../img/"></image> </view> -->
+            
+          </view>
+          <van-uploader wx:if="{{patrolState != 1}}" file-list="{{ item.imgList }}"  data-index="{{ind}}" data-mincateid ="{{item.minCateId}}" bind:after-read="afterRead"  bind:delete="deleteImg"  />
+          
+        </view>
+      </view>
+      <view class="box690"> 
+        <view class="titleLine ">录音 </view>
+        <view class="addVideobtn" bindtap="addVideo" wx:if="{{patrolState != 1}}" data-minCateId="{{item.minCateId}}" data-index= "{{ind}}" >
+          <image class="iconMkf" src="../../img/icon_mkf.png"></image> 添加录音
+        </view>
+        <view class="box690 hasTop">
+          <view   wx:for="{{item.voiceList}}" wx:for-item="i" wx:for-index="indcell" class="videocon" >
+            <van-row custom-class="videoList" border='false'>
+              <van-col span="3" >
+                <view class="video" data-item="{{i.url}}" data-status="{{i.isPlay}}" data-times="{{i.times}}" data-indcell="{{indcell}}" data-ind="{{ind}}" data-id='{{i.id}}' bindtap="playVideo"> 
+                  <image class="iconPlay" src="../../img/{{i.isPlay == 1 && playId == i.id ? 'icon_audiostop':'icon_audiostar'}}.png"  ></image>
+
+            </view>
+           </van-col>  <!--{{i.url}}-->
+            <van-col span="13">{{i.name}}.mp3</van-col>
+            <van-col span="5">{{i.times}} </van-col>
+            <van-col span="3"  bindtap="delVideo"  custom-class="colorR" data-indcell="{{indcell}}" data-ind="{{ind}}" data-mincateid="{{item.minCateId}}" data-id="{{i.id}}" wx:if="{{patrolState != 1}}">删除</van-col>
+          </van-row>
+         <view class="videoBar" wx:if="{{i.isPlay == 1 && playId == i.id}}" >
+         
+          <van-progress
+            percentage = false
+            pivot-text="{{myAudioCurrent}}"
+            color="#60B2FF"
+            percentage ="{{audioPos}}"
+           />
+          </view>
+        </view>
+        </view>
+      </view>
+      </view>
+    </view>
+    <view class="box680 hei50"></view>
+    <view class="box680 footBtn">
+      <van-button type="info" wx:if="{{ifOne}}" block bindtap="getNext">下一项</van-button>
+       <van-button type="info" wx:if="{{ifLast}}" block  bind:click="toSetting">返回主页</van-button>
+      <view wx:if="{{ !ifOne && !ifLast}}" >
+      <van-button type="default" bind:click="getPre" custom-class="setBtn">上一项</van-button>
+      <van-button type="info"  bindtap="getNext"  custom-class="setBtn">下一项</van-button>
+      </view>
+    </view>
+    
+    
+  </view>
+  <view style="z-index:20">
+<!--添加录音的弹框-->
+    <van-popup show="{{ showPop }}" bind:close="closeVideo" close-on-click-overlay="{{false}}" closeable="true" data-sc="0" style="z-index:10;">
+      <view class="popBox">
+        <view class="popTitle"> 录音</view>
+        <view class="timeBox">
+          {{endtime}}
+        </view>
+        <view class="limitText">仅支持录制10分钟</view>
+        <view class="editBox">
+          <image class="iconVideo iconBc" wx:if="{{ifFirst}}" src="../../img/icon_baocun.png" bindtap="saveVideo" data-minCateId="{{item.minCateId}}"></image>
+          <image class="iconVideo iconLy" wx:if="{{ifrecord == false}}" src="../../img/icon_luyin.png" bindtap="openRecord"></image>
+          <image class="iconVideo iconLy" wx:if="{{ifrecord == true}}" src="../../img/icon_stop.png" bindtap="stopRecord"></image>
+          <image class="iconVideo iconDel" wx:if="{{ifFirst}}" src="../../img/icon_del.png" bindtap="closeVideo" data-sc="1"></image>
+        </view>
+      </view>
+    </van-popup>
+
+  </view>

@@ -1,0 +1,34 @@
+/* pages/login/login.wxss */
+.container{
+ position: relative;
+}
+.loginBg{
+  position: relative;
+  font-size: 0;
+  width: 750rpx;
+  height:340rpx;
+}
+.loginImg{
+  width: 750rpx;
+  height: 340rpx;
+}
+.loginB{
+  position: relative;
+  width: 680rpx;
+  height: auto;
+  margin-top: 60rpx;
+}
+.pd1{
+  padding: 15rpx 0;
+}
+.footText{
+  position: fixed;
+  bottom:0;
+  left: 0;
+  width: 750rpx;
+  height: 200rpx;
+  line-height: 200rpx;
+  font-size: 24rpx;
+  color: #999;
+  text-align: center;
+}

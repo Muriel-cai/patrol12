@@ -1,0 +1,76 @@
+<!--pages/setInfo/setInfo.wxml-->
+<view class="container" >
+ <view class='nav bg-white'>
+    <navBar background='#fff' title="新增巡查"  back="{{true}}" home="{{false}}" bindback="handerback" bindhome="handerhome">    
+      </navBar>
+  </view>
+  <view class="blockB hasTop" id="mainBox">
+  
+    <van-cell-group adjust-position ="false">
+      <van-cell 
+        title="巡查机构" 
+        value="{{ comName }}" 
+        bind:click="getName"         
+        />
+        <van-cell 
+        title="巡查时间" 
+        value="{{ xcTime }}" 
+        bind:click="getTime" 
+        
+        />     
+    </van-cell-group>
+    </view>
+   <view class="box650 hasTop">
+    <van-button type="info" block bindtap="hasDone">开始巡查</van-button>
+  </view>
+  <view class="box710" wx:if="{{haslist}}">
+    <van-divider contentPosition="center">巡查历史</van-divider>   
+    <view class="conBox box710 bgF"  wx:for="{{content}}" wx:for-item="list" wx:for-index="cellindex">
+        <comList 
+        id="{{list.id}}"
+        organId="{{list.organId}}"
+        title="{{list.organName}}" 
+        time="{{list.startTime}}" 
+        busiState="{{list.busiState}}"
+        terminationTime = "{{list.adjustEndTime}}" 
+        isReceiveAdjust ="{{list.isReceiveAdjust}}"
+        userName="{{list.userName}}"
+        bindtoNext="toNext"
+        /> 
+     </view> 
+    </view>
+    <van-popup
+      show="{{ show }}"      
+      bind:close="onClose"
+      position="bottom"
+      custom-style=" height:{{height}}"
+      
+    >
+    <!-- get-container="#mainBox"  -->
+    <view wx:if="{{isTime}}" class="blockB">
+      <van-datetime-picker
+        type="date"
+        min-date="{{ minDate }}"
+        max-date="{{ maxDate }}"
+        bind:confirm ="hasSure"
+        bind:cancel="onClose"
+       
+      />
+    </view>
+    <view wx:if="{{!isTime}}" class="blockB">
+      <van-search value="{{ keyValue }}" input-align="center" bind:change="getValue"  placeholder="请输入搜索关键词" />
+      <van-picker 
+        columns="{{ organData }}" 
+        bind:change="onChange" 
+        bind:cancel="onClose"
+        bind:confirm="getNameSure"
+        value-key="organName"
+        show-toolbar= "true"
+        defaultIndex="0"
+      />
+    </view>
+    </van-popup>
+
+ 
+ 
+</view>
